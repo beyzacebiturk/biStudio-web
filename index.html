@@ -293,7 +293,7 @@
       <!-- App Store'da YAYINDA (Apple ID 6788559758). -->
       <a class="store-btn" href="https://apps.apple.com/app/id6788559758" target="_blank" rel="noopener" aria-label="App Store'dan indir">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.7 12.7c0-1.8 1.5-2.7 1.6-2.8-.9-1.3-2.2-1.4-2.7-1.5-1.1-.1-2.2.7-2.8.7-.6 0-1.5-.7-2.4-.6-1.2.1-2.4.7-3 1.8-1.3 2.2-.3 5.5.9 7.3.6.9 1.3 1.9 2.2 1.8.9 0 1.2-.6 2.3-.6s1.4.6 2.3.6c1 0 1.6-.9 2.2-1.8.7-1 1-2 1-2s-2.5-1-2.6-3.9zM13.8 6.8c.6-.7.9-1.6.8-2.6-.8 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.5.9 0 1.8-.5 2.6-1.2z"/></svg>
-        <span><small>App Store Yayında</small><b>iPhone'da edinin</b></span>
+        <span><small>App Store'dan</small><b>iPhone'da edinin</b></span>
       </a>
       <!-- Play'de yayınlanınca aktifleştir (paket com.beyzacebiturk.fitstudio). -->
       <a class="store-btn disabled" href="https://play.google.com/store/apps/details?id=com.beyzacebiturk.fitstudio" target="_blank" rel="noopener" aria-label="Google Play yakında">
@@ -358,6 +358,7 @@
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span><b>Uygulaması olmayanları da ekle.</b> Misafir olarak isimle randevuya kat.</span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span><b>Kural senin.</b> Çalışma saatleri, ders süresi, iptal penceresi — hepsi ayarlanabilir.</span></li>
         </ul>
+        <a class="btn btn-primary" href="#iletisim" style="margin-top:10px;display:inline-flex">Ücretsiz dene — sizi arayalım</a>
       </div>
       <div class="stat-card reveal" aria-hidden="true">
         <div class="row"><span class="k">Bu haftaki doluluk</span><span class="v sage">%86</span></div>
@@ -368,6 +369,73 @@
     </div>
   </section>
 </div>
+
+<style>
+  .lead-sec{padding:clamp(48px,8vw,96px) 0}
+  .lead-form{max-width:560px;margin:32px auto 0;display:flex;flex-direction:column;gap:16px}
+  .lead-form label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;color:var(--ink)}
+  .lead-form .opt{font-weight:400;color:var(--ink-soft)}
+  .lead-form input,.lead-form textarea{font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;outline:none;transition:border-color .15s}
+  .lead-form input:focus,.lead-form textarea:focus{border-color:var(--rose)}
+  .lead-form textarea{resize:vertical;min-height:76px}
+  .lf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:560px){.lf-row{grid-template-columns:1fr}}
+  .lf-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  #leadBtn{margin-top:4px;align-self:flex-start;cursor:pointer;border:none}
+  #leadBtn[disabled]{opacity:.6;cursor:default}
+  .lf-msg{margin:6px 0 0;font-size:14px;min-height:20px;font-weight:600}
+  .lf-msg.ok{color:var(--sage)}
+  .lf-msg.err{color:var(--rose-deep)}
+  .lf-kvkk{margin:2px 0 0;font-size:12px;color:var(--ink-soft)}
+</style>
+<section id="iletisim" class="lead-sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Ücretsiz başla</span>
+      <h2>Stüdyon için ücretsiz denemeyi başlatalım.</h2>
+      <p>Numaranı bırak, seni arayıp stüdyonu birlikte kuralım.</p>
+    </div>
+    <form id="leadForm" class="lead-form reveal" novalidate>
+      <div class="lf-row">
+        <label>Ad Soyad<input type="text" name="name" required autocomplete="name" maxlength="100"></label>
+        <label>Telefon<input type="tel" name="phone" required autocomplete="tel" maxlength="30" placeholder="05xx xxx xx xx"></label>
+      </div>
+      <label>Stüdyo adı <span class="opt">(opsiyonel)</span><input type="text" name="studio" maxlength="120"></label>
+      <label>Mesajın <span class="opt">(opsiyonel)</span><textarea name="note" rows="3" maxlength="1000"></textarea></label>
+      <input type="text" name="website" class="lf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="btn btn-primary" id="leadBtn">Beni arayın</button>
+      <p class="lf-msg" id="leadMsg" role="status" aria-live="polite"></p>
+      <p class="lf-kvkk">Bilgilerin yalnızca seninle iletişim için kullanılır, üçüncü kişilerle paylaşılmaz.</p>
+    </form>
+  </div>
+</section>
+<script>
+(function(){
+  var f=document.getElementById('leadForm');
+  if(!f) return;
+  var btn=document.getElementById('leadBtn'), msg=document.getElementById('leadMsg'), el=f.elements;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var data={
+      name:el['name'].value.trim(),
+      phone:el['phone'].value.trim(),
+      studio:el['studio'].value.trim(),
+      note:el['note'].value.trim(),
+      website:el['website'].value
+    };
+    if(!data.name||!data.phone){msg.className='lf-msg err';msg.textContent='Lütfen ad ve telefon gir.';return;}
+    btn.disabled=true;msg.className='lf-msg';msg.textContent='Gönderiliyor…';
+    fetch('https://us-central1-fitstudio-ca1e4.cloudfunctions.net/submitLead',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)
+    }).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(res){
+      if(res.ok&&res.j&&res.j.ok){f.reset();msg.className='lf-msg ok';msg.textContent='Teşekkürler! En kısa sürede seni arayacağız.';}
+      else{msg.className='lf-msg err';msg.textContent=(res.j&&res.j.error)||'Bir sorun oldu, tekrar dener misin?';}
+    }).catch(function(){msg.className='lf-msg err';msg.textContent='Bağlantı sorunu, tekrar dener misin?';})
+    .finally(function(){btn.disabled=false;});
+  });
+})();
+</script>
 
 <div class="faq" id="sss">
   <section>
