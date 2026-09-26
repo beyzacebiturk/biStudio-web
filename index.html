@@ -400,7 +400,7 @@
         <label>Ad Soyad<input type="text" name="name" required autocomplete="name" maxlength="100"></label>
         <label>Telefon<input type="tel" name="phone" required autocomplete="tel" maxlength="30" placeholder="05xx xxx xx xx"></label>
       </div>
-      <label>Stüdyo adı <span class="opt">(opsiyonel)</span><input type="text" name="studio" maxlength="120"></label>
+      <label>E-posta<input type="email" name="email" required autocomplete="email" maxlength="120" placeholder="ornek@eposta.com"></label>
       <label>Mesajın <span class="opt">(opsiyonel)</span><textarea name="note" rows="3" maxlength="1000"></textarea></label>
       <input type="text" name="website" class="lf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit" class="btn btn-primary" id="leadBtn">Beni arayın</button>
@@ -419,11 +419,12 @@
     var data={
       name:el['name'].value.trim(),
       phone:el['phone'].value.trim(),
-      studio:el['studio'].value.trim(),
+      email:el['email'].value.trim(),
       note:el['note'].value.trim(),
       website:el['website'].value
     };
-    if(!data.name||!data.phone){msg.className='lf-msg err';msg.textContent='Lütfen ad ve telefon gir.';return;}
+    if(!data.name||!data.phone||!data.email){msg.className='lf-msg err';msg.textContent='Lütfen ad, telefon ve e-posta gir.';return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)){msg.className='lf-msg err';msg.textContent='Geçerli bir e-posta gir.';return;}
     btn.disabled=true;msg.className='lf-msg';msg.textContent='Gönderiliyor…';
     fetch('https://us-central1-fitstudio-ca1e4.cloudfunctions.net/submitLead',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)
